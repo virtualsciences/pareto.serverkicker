@@ -16,6 +16,7 @@ setup(name='pareto.serverkicker',
       license='BSD',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
+      namespace_packages=['pareto', ],
       zip_safe=False,
       install_requires=[
           # -*- Extra requirements: -*-
