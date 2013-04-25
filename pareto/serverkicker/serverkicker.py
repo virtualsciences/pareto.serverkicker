@@ -26,7 +26,7 @@ def command():
     if len(args) != 1:
         parser.error('expecting a single URL as argument')
     url = args[0]
-    if timeout:
+    if options.timeout:
         # we can't pass timeout as arg for urlopen() if we want to support
         # python <= 2.4
         socket.setdefaulttimeout(options.timeout)
