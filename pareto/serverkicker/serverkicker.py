@@ -2,31 +2,37 @@ import os
 import sys
 import urllib2
 import socket
-import argparse
+import optparse
 
 def command():
-    description = """\
+    description = """
+    %s [-t <timeout>] [-c <command>] url
+
     This script checks for the availability of a web service, and if said
     service is not available, calls a command to (re)boot it.
-    """
+    """ % (sys.argv[0],)
 
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument(
-        'checkurl', metavar='URL', type=str, nargs=1,
-        help='URL to check')
-    parser.add_argument(
+    parser = optparse.OptionParser(usage=description)
+    parser.add_option(
         '-t', dest='timeout', action='store', type=float, default=30,
         help='Timeout (in seconds, default 30)')
-    parser.add_argument(
+    parser.add_option(
         '-c', dest='command', action='store', type=str, default=None,
-        help='Command to execute if the server is not available (default None)')
+        help=(
+            'Command to execute if the server is not available'
+            ' (default None)'))
 
-    args = parser.parse_args()
-    url = args.checkurl[0]
+    (options, args) = parser.parse_args()
+    if len(args) != 1:
+        parser.error('expecting a single URL as argument')
+    url = args[0]
     try:
-        urllib2.urlopen(url, timeout=args.timeout)
+        urllib2.urlopen(url, timeout=options.timeout)
     except (urllib2.URLError, socket.error):
-        if args.command:
-            os.system(args.command)
+        if options.command:
+            os.system(options.command)
         # exit with error code
         sys.exit(1)
+
+if __name__ == '__main__':
+    command()
